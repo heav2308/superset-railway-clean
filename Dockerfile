@@ -1,5 +1,9 @@
 FROM apache/superset:latest
 
+USER root
+
+RUN /app/.venv/bin/python -m pip install --no-cache-dir psycopg2-binary
+
 COPY start.sh /app/start.sh
 COPY superset_config.py /app/superset_config.py
 
