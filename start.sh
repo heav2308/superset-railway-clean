@@ -5,10 +5,10 @@ export FLASK_APP=superset
 export SUPERSET_CONFIG_PATH="${SUPERSET_CONFIG_PATH:-/app/superset_config.py}"
 export PORT="${PORT:-8088}"
 
-python -c "import psycopg2; print('psycopg2 OK')" || true
+/app/.venv/bin/python -c "import psycopg2; print('psycopg2 OK')"
 
 n=0
-until superset db upgrade; do
+until /app/.venv/bin/superset db upgrade; do
   n=$((n+1))
   if [ "$n" -ge 20 ]; then
     echo "Metadata DB not ready after retries"
@@ -17,13 +17,13 @@ until superset db upgrade; do
   sleep 3
 done
 
-superset fab create-admin \
+/app/.venv/bin/superset fab create-admin \
   --username "${ADMIN_USERNAME}" \
   --firstname "Admin" \
   --lastname "User" \
   --email "${ADMIN_EMAIL}" \
   --password "${ADMIN_PASSWORD}" || true
 
-superset init
+/app/.venv/bin/superset init
 
-exec superset run -p "${PORT}" --host 0.0.0.0 --with-threads
+exec /app/.venv/bin/superset run -p "${PORT}" --host 0.0.0.0 --with-threads
